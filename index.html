@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>วันใหม่ มีอารายจะบอก... ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 100%);
+            font-family: 'Kanit', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #intro-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #ask-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .btn-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            min-height: 120px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-family: 'Kanit', sans-serif;
+            font-weight: 500;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+            user-select: none;
+        }
+
+        .primary-btn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
+        }
+
+        .secondary-btn {
+            background-color: #ffffff;
+            color: #999;
+            border: 2px solid #eee;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+            z-index: 9999;
+        }
+
+        .overlay.show { opacity: 1; visibility: visible; }
+
+        .popup-gui {
+            background-color: white;
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .overlay.show .popup-gui { transform: scale(1); }
+
+        .popup-gui h2 { color: #ff4d6d; font-size: 3rem; margin-bottom: 10px; }
+        .heart-animation { font-size: 5rem; animation: pulse 1s infinite; display: inline-block; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <h1>วันใหม่ มีอารายจะบอก... 🫣</h1>
+        <button class="primary-btn" onclick="goToNextStep()">กดตรงนี้ค่าบบ</button>
+    </div>
+
+    <div id="ask-screen">
+        <h1>เป็นแฟนกับปันม้ายย? ❤️</h1>
+        <div class="btn-container">
+            <button id="yes-btn" class="primary-btn">เป็น</button>
+            <button id="no-btn" class="secondary-btn">ไม่เป็น</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="celebration-overlay">
+        <div class="popup-gui">
+            <h2>เย้... 🎉💖</h2>
+            <p style="font-size: 1.8rem; color: #444; margin-bottom: 20px;">ตกลงแล้วห้ามคืนคำนะ!</p>
+            <div class="heart-animation">💝</div>
+            <p style="margin-top: 20px; color: #ff4d6d; font-weight: 300;">ปันจะดูแลวันให้อย่างดีเลย</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const introScreen = document.getElementById('intro-screen');
+        const askScreen = document.getElementById('ask-screen');
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const overlay = document.getElementById('celebration-overlay');
+
+        // 1. ฟังก์ชันเปลี่ยนหน้า
+        function goToNextStep() {
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                askScreen.style.display = 'flex';
+                setTimeout(() => {
+                    askScreen.style.opacity = '1';
+                }, 50);
+            }, 500);
+        }
+
+        // 2. ปุ่มหนี (สุ่มตำแหน่งใหม่เมื่อเอาเมาส์ไปวาง หรือเอานิ้วไปแตะ)
+        const moveButton = (e) => {
+            if (e.type === 'touchstart') e.preventDefault();
+            
+            noBtn.style.position = 'fixed';
+            const padding = 50;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            const randomX = Math.max(padding, Math.random() * maxX);
+            const randomY = Math.max(padding, Math.random() * maxY);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            noBtn.style.zIndex = '1000';
+        };
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+
+        // 3. เมื่อกด "เป็น"
+        yesBtn.addEventListener('click', () => {
+            overlay.classList.add('show');
+            
+            // ยิงพลุ
+            var end = Date.now() + (3 * 1000);
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#ffffff'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        });
+    </script>
+
+</body>
+</html>
